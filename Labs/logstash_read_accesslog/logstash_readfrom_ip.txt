@@ -1,0 +1,27 @@
+input{stdin{}}
+filter{
+grok {
+match => {
+"message" => '%{HTTPDATE:timestamp} %{IP:ip} <%{DATA:msg}>'
+}
+}
+
+
+date {
+match => [ "timestamp", "dd/MMM/YYYY:HH:mm:ss Z" ]
+locale => en
+}
+geoip {
+source => "ip"
+}
+}
+output{stdout{codec => rubydebug}
+
+elasticsearch {    
+    hosts => ["localhost"]
+    index => "test21"
+    document_type => "_doc"
+    
+}
+
+}
